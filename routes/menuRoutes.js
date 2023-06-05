@@ -5,6 +5,7 @@ const {
   getAllMenu,
   getMenu,
   updateMenu,
+  deleteMenu,
 } = require("../controllers/menuController");
 const {
   isAuthenticated,
@@ -21,7 +22,8 @@ router
 router
   .route("/:menuId")
   .get(getMenu)
-  .patch(isAuthenticated, allowedRoles("admin"), updateMenu);
+  .patch(isAuthenticated, allowedRoles("admin"), updateMenu)
+  .delete(isAuthenticated, allowedRoles("admin"), deleteMenu);
 
 router.use("/:menuId/review", ReviewRoutes);
 

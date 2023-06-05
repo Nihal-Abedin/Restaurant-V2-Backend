@@ -13,7 +13,7 @@ const restaurantSchema = new mongoose.Schema(
       max: 5,
       default: 4.5,
     },
-    total_reviews: {
+    total_menus: {
       type: Number,
       default: 1,
     },
@@ -33,5 +33,8 @@ restaurantSchema.virtual("menus", {
 });
 
 const restaurantModel = mongoose.model("Restaurant", restaurantSchema);
-
+// restaurantModel
+//   .updateMany({}, { $rename: { total_reviews: "total_menus" } })
+//   .then(() => console.log("Documents updated successfully."))
+//   .catch((err) => console.error("Error updating documents:", err));
 module.exports = restaurantModel;

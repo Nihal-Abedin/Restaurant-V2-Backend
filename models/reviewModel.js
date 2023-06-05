@@ -44,8 +44,8 @@ reviewSchema.statics.calculateRating = async function (menuId) {
     });
   } else {
     await Menu.findByIdAndUpdate(menuId, {
-      total_reviews: stats[0].nRating,
-      average_ratings: stats[0].avgRating,
+      total_reviews: 0,
+      average_ratings: 4.5,
     });
   }
 };

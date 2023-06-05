@@ -8,8 +8,9 @@ const menuSchema = new mongoose.Schema(
       required: [true, "A menu must have a name."],
     },
     menu_items: {
-      type: [String],
+      type: [mongoose.Schema.ObjectId],
       required: [true, "Must provide menu items."],
+      ref: "Item",
     },
     total_items: {
       type: Number,
@@ -27,6 +28,11 @@ const menuSchema = new mongoose.Schema(
     restaurant: {
       type: mongoose.Schema.ObjectId,
       ref: "Restaurant",
+    },
+    category: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Category",
+      required: [true, "A menu must belong to a category."],
     },
   },
   {
@@ -52,6 +58,7 @@ menuSchema.pre("save", function (next) {
 // statics method
 
 menuSchema.statics.calculateRating = async function (resId) {
+  console.log(resId);
   const stats = await this.aggregate([
     {
       $match: { restaurant: resId },
@@ -66,13 +73,13 @@ menuSchema.statics.calculateRating = async function (resId) {
   ]);
   if (stats.length > 0) {
     await Restaurant.findByIdAndUpdate(resId, {
-      total_reviews: stats[0].nMenus,
+      total_menus: stats[0].nMenus,
       average_ratings: stats[0].avgRating,
     });
   } else {
-    await Menu.findByIdAndUpdate(menuId, {
-      total_reviews: stats[0].nMenus,
-      average_ratings: stats[0].avgRating,
+    await Restaurant.findByIdAndUpdate(resId, {
+      total_menus: 0,
+      average_ratings: 4.5,
     });
   }
 };
@@ -82,7 +89,24 @@ menuSchema.post("save", function () {
 });
 
 // Query Middleware
-
+menuSchema.pre(/^find/, async function (next) {
+  this.populate({
+    path: "category",
+    select: "name ",
+  })
+    .populate({
+      path: "menu_items",
+      select: "name ",
+    })
+    .populate({
+      path: "restaurant",
+      select: "name",
+    })
+    .populate({
+      path: "reviews",
+      select: "review user rating -menu",
+    });
+});
 menuSchema.pre(/^findOneAnd/, async function (next) {
   // this.query
   this.query = await this.model.findOne(this.getQuery());

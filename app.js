@@ -15,6 +15,7 @@ const UserRoutes = require("./routes/userRoutes");
 const RestaurantRoutes = require("./routes/restaurantRoutes");
 const MenuRoutes = require("./routes/menuRoutes");
 const ReviewRoutes = require("./routes/reviewRoutes");
+const CategoryRoutes = require("./routes/categoryRoutes");
 
 // Global middlewares
 console.log(allowOrigins);
@@ -53,6 +54,7 @@ app.use(`/api/v${process.env.VERSION}/user`, UserRoutes);
 app.use(`/api/v${process.env.VERSION}/restaurant`, RestaurantRoutes);
 app.use(`/api/v${process.env.VERSION}/menu`, MenuRoutes);
 app.use(`/api/v${process.env.VERSION}/review`, ReviewRoutes);
+app.use(`/api/v${process.env.VERSION}/category`, CategoryRoutes);
 
 app.use(GlobalErrorHandeler);
 

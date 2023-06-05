@@ -25,7 +25,6 @@ exports.getAllRes = catchAsync(async (req, res, next) => {
 exports.getRes = catchAsync(async (req, res, next) => {
   const restaurant = await Restaurant.findById(req.params.id).populate({
     path: "menus",
-    select: "name menu_items -restaurant",
   });
 
   if (!restaurant) {

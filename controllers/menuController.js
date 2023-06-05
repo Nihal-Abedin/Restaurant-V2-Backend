@@ -9,20 +9,18 @@ exports.setUserBody = (req, res, next) => {
   next();
 };
 exports.getAllMenu = catchAsync(async (req, res, next) => {
+  const menu = await Menu.find();
+
   res.status(200).json({
-    message: "GET ALL MENU from Menu Controller",
+    status: 200,
+    message: "success",
+    data: {
+      menu,
+    },
   });
 });
 exports.getMenu = catchAsync(async (req, res, next) => {
-  const menu = await Menu.findById(req.params.menuId)
-    .populate({
-      path: "restaurant",
-      select: "name",
-    })
-    .populate({
-      path: "reviews",
-      select: "review user -menu",
-    });
+  const menu = await Menu.findById(req.params.menuId);
 
   if (!menu) {
     return next(new AppError("No menu With this Id.", 400));
@@ -76,6 +74,16 @@ exports.createReviewForMenu = catchAsync(async (req, res, next) => {
     data: {
       data: review,
     },
+  });
+});
+exports.deleteMenu = catchAsync(async (req, res, next) => {
+  const menu = await Menu.findByIdAndDelete(req.params.menuId);
+  if (!menu) {
+    return next(new AppError("No menu with this Id.", 400));
+  }
+  res.status(200).json({
+    status: 200,
+    message: "Successfullt deleted!",
   });
 });
 
